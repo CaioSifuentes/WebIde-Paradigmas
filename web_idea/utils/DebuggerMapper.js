@@ -9,7 +9,9 @@ sys.stdout.reconfigure(encoding='utf-8')
 __debugCodeFlag = 0
 __debugFinishedFlag = 0
 
-__VISIBLE_LINES = {}
+__currentVars = {}
+
+__visibleLines = {}
         
 async def wait_for_debug():
     global __debugCodeFlag
@@ -48,11 +50,12 @@ asyncio.create_task(debug_code())
             } else {
                 preCallDefCode = addAwaitBeforeFunctionCall(line.replace(/\s+/g, ''));
                 middleCode += `
-    ${indent}real_line = inspect.currentframe().f_lineno
-    ${indent}__VISIBLE_LINES[real_line] = ${visibleLineCounter}
-    ${indent}print(f"[DEBUG] -> Executando linha {__VISIBLE_LINES[real_line]}: [ ${trimmedLine} ]")
+    ${indent}__realLine = inspect.currentframe().f_lineno
+    ${indent}__visibleLines[__realLine] = ${visibleLineCounter}
+    ${indent}print(f"[DEBUG] -> Executando linha {__visibleLines[__realLine]}: [ ${trimmedLine} ]")
     ${indent}${preCallDefCode == ""? line.trim() : preCallDefCode.trim()}
     ${indent}await wait_for_debug()
+    ${indent}__currentVars.update({k: v for k, v in inspect.currentframe().f_locals.items() if (not k.startswith("__") and not callable(v))})
     `;
             }
             visibleLineCounter++;

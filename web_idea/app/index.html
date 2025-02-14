@@ -23,17 +23,27 @@ print(c)
     <br />
     <div>Output:</div>
     <textarea id="output" style="width: 100%;" rows="6" disabled></textarea>
-    <textarea id="console" style="width: 100%;" rows="6" disabled></textarea>
     <button onclick="setCode(1)">Código 1</button>
     <button onclick="setCode(2)">Código 2</button>
     <button onclick="setCode(3)">Código 3</button>
     <button onclick="setCode(4)">Código 4</button>
 
+    <div class="container">
+      <h2>Tabela Gerada a Partir de um Objeto</h2>
+      <div class="table-container">
+          <table id="data-table">
+              <thead>
+                  <tr id="table-header"></tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+          </table>
+      </div>
+  </div>
+
     <script src="../utils/DebuggerMapper.js"></script>
 
     <script>
       const output = document.getElementById("output");
-      const falseConsole = document.getElementById("console");
       const code = document.getElementById("code");
       const stepButton = document.getElementById("stepButton");
       const debugButton = document.getElementById("debugButton");
@@ -42,16 +52,13 @@ print(c)
       let debugLines = [];
       let currentLine = 0;
       let pyodide;
+      let debugVars = {};
 
       function addToOutput(s) {
         output.value += s + "\n";
         output.scrollTop = output.scrollHeight;
       }
-      function printc(...args) {
-        const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
-        falseConsole.value += message + "\n";
-        falseConsole.scrollTop = falseConsole.scrollHeight;
-      }
+
       function clearConsole() {
         currentLine = 0;
         debugLines = [];
@@ -92,15 +99,44 @@ print(c)
       }
 
       async function stepDebug() {
-        printc(pyodide.globals.get("__debugFinishedFlag"));
         if (pyodide.globals.get("__debugFinishedFlag") === 0){
           pyodide.runPython("__debugCodeFlag = 1");
           await new Promise(resolve => setTimeout(resolve, 100));
           currentLine += 1;
+
+          debugVars = pyodide.globals.get("__currentVars").toJs();
+          criarTabela(debugVars);
         } else {
           finishDebug();
+          debugVars = {};
         }
       }
+
+      function criarTabela(obj) {
+            const keys = Object.keys(obj); // Pega as chaves do objeto
+            const tableHeader = document.getElementById("table-header");
+            const tableBody = document.getElementById("table-body");
+
+            // Limpa a tabela antes de adicionar dados
+            tableHeader.innerHTML = "";
+            tableBody.innerHTML = "";
+
+            // Criar cabeçalhos
+            keys.forEach(key => {
+                const th = document.createElement("th");
+                th.textContent = key;
+                tableHeader.appendChild(th);
+            });
+
+            // Criar uma linha com os dados do objeto
+            const tr = document.createElement("tr");
+            keys.forEach(key => {
+                const td = document.createElement("td");
+                td.textContent = obj[key];
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        }
 
     </script>
 
