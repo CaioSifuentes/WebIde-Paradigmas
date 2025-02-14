@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+  </head>
+
+  <body>
+    <p>
+      You can execute any Python code. Just enter something in the box below and
+      click the button.
+    </p>
+    <textarea id="code" rows="5" cols="50">
+a = 5
+b = 10
+c = a + b
+print(c)
+    </textarea><br>
+    <button onclick="evaluatePython()">Run</button>
+    <button onclick="startDebug()">Debug</button>
+    <button onclick="stepDebug()" disabled id="stepButton">Step</button>
+    <button onclick="clearConsole()">Clear</button>
+    <br />
+    <br />
+    <div>Output:</div>
+    <textarea id="output" style="width: 100%;" rows="6" disabled></textarea>
+    <textarea id="console" style="width: 100%;" rows="6" disabled></textarea>
+    <button onclick="setCode(1)">Código 1</button>
+    <button onclick="setCode(2)">Código 2</button>
+    <button onclick="setCode(3)">Código 3</button>
+    <button onclick="setCode(4)">Código 4</button>
+
+    <script>
+      const output = document.getElementById("output");
+      const falseConsole = document.getElementById("console");
+      const code = document.getElementById("code");
+      const stepButton = document.getElementById("stepButton");
+
+      let pyodideReadyPromise = loadPyodide();
+      let debugLines = [];
+      let pyodide;
+
+      function addToOutput(s) {
+        output.value += s + "\n";
+        output.scrollTop = output.scrollHeight;
+      }
+      function printc(...args) {
+        const message = args.map(arg => typeof arg === 'object' ? JSON.stringify(arg) : arg).join(" ");
+        falseConsole.value += message + "\n";
+        falseConsole.scrollTop = falseConsole.scrollHeight;
+      }
+      function clearConsole() {
+        stepButton.disabled = true;
+        output.value = "";
+      }
+
+      async function evaluatePython() {
+        pyodide = await pyodideReadyPromise;
+        try {
+          let result = pyodide.runPython(code.value);
+          if (result != undefined) addToOutput(">>>\n" + result);
+        } catch (err) {
+          addToOutput("Error: " + err);
+        }
+      }
+
+      async function startDebug() {
+        pyodide = await pyodideReadyPromise;
+        debugLines = code.value.split("\n");
+        debugFormatedCode = formatDebugCode();
+        console.log("Debuging: \n" + debugFormatedCode);
+        pyodide.runPythonAsync(debugFormatedCode);
+
+        stepButton.disabled = false;
+        output.value = "Debugging started...\n";
+      }
+
+      async function stepDebug() {
+        //pyodide.runPython(`__debugCodeFlag = 1`);
+        pyodide.runPython("d = 1");
+        await new Promise(resolve => setTimeout(resolve, 100));
+        console.log(pyodide.globals.get("d"));
+      }
+
+      function formatDebugCode(){
+    let code = `
+import asyncio
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
+d = 0
+
+async def wait_for_debug():
+    global d
+    while d == 0:
+        await asyncio.sleep(0.1)
+    d = 0  # Reseta para aguardar o próximo passo
+
+async def debug_code():
+    global d
+    import time
+    line_number = 1  # Controla o número da linha
+`;
+
+
+    const linesSize = debugLines.length();
+    debugLines.forEach(
+        (line) => {
+            if (!line.startsWith('for ')){
+              const globalVars = Object.keys(pyodide.globals);
+              code += `
+    print(f"[DEBUG] ▶️ Executando linha {line_number}/${linesSize}: ${line.trim()}")
+
+    ${line}
+    
+    await wait_for_debug()
+    line_number += 1
+`;
+            }
+        }
+    );
+
+    // Garante que a função será chamada
+    code += `
+asyncio.create_task(debug_code())
+`;
+
+    return code;
+}
+
+
+    </script>
+
+
+
+
+    <script>
+        // Subscreve a função "console.log". Além de printar no console, também adiciona os argumentos da função no campo output.
+        (function() {
+            const originalLog = console.log;
+
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                const message = args.join(" ");
+
+                if (!message.startsWith("cl: ")){
+                    output.value += message + "\n";
+                    output.scrollTop = output.scrollHeight;
+                }
+            };
+        })();
+    </script>
+    <script>
+        function setCode(option) {
+            let code = "";
+            
+            if (option === 1) {
+                code = `a = 5\nb = 10\nc = a + b\nprint(c)`;
+            } else if (option === 2) {
+                code = `a = 0\nfor _ in range(10):\n   a += 1\n   a += 2\nprint(a)`;
+            } else if (option === 3) {
+                code = `a = 2\nif a % 2:\n  print('Par')\nelse:\n  print('Impar')`;
+            } else if (option === 4) {
+                code = `def func(a, b):\n return a + b\nprint(func(1, 2))`;
+            }
+            
+            clearConsole();
+            document.getElementById("code").value = code;
+        }
+    </script>
+  </body>
+</html>
