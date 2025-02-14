@@ -16,7 +16,7 @@ c = a + b
 print(c)
     </textarea><br>
     <button onclick="evaluatePython()">Run</button>
-    <button onclick="startDebug()">Debug</button>
+    <button onclick="startDebug()" id="debugButton">Debug</button>
     <button onclick="stepDebug()" disabled id="stepButton">Step</button>
     <button onclick="clearConsole()">Clear</button>
     <br />
@@ -29,14 +29,18 @@ print(c)
     <button onclick="setCode(3)">Código 3</button>
     <button onclick="setCode(4)">Código 4</button>
 
+    <script src="../utils/DebuggerMapper.js"></script>
+
     <script>
       const output = document.getElementById("output");
       const falseConsole = document.getElementById("console");
       const code = document.getElementById("code");
       const stepButton = document.getElementById("stepButton");
+      const debugButton = document.getElementById("debugButton");
 
       let pyodideReadyPromise = loadPyodide();
       let debugLines = [];
+      let currentLine = 0;
       let pyodide;
 
       function addToOutput(s) {
@@ -49,7 +53,10 @@ print(c)
         falseConsole.scrollTop = falseConsole.scrollHeight;
       }
       function clearConsole() {
+        currentLine = 0;
+        debugLines = [];
         stepButton.disabled = true;
+        debugButton.disabled = false;
         output.value = "";
       }
 
@@ -66,67 +73,34 @@ print(c)
       async function startDebug() {
         pyodide = await pyodideReadyPromise;
         debugLines = code.value.split("\n");
-        debugFormatedCode = formatDebugCode();
-        console.log("Debuging: \n" + debugFormatedCode);
+        debugFormatedCode = formatDebugCode(debugLines);
+        //console.log("Debuging: \n" + debugFormatedCode);
         pyodide.runPythonAsync(debugFormatedCode);
 
         stepButton.disabled = false;
+        debugButton.disabled = true;
         output.value = "Debugging started...\n";
       }
 
-      async function stepDebug() {
-        //pyodide.runPython(`__debugCodeFlag = 1`);
-        pyodide.runPython("d = 1");
-        await new Promise(resolve => setTimeout(resolve, 100));
-        console.log(pyodide.globals.get("d"));
+      async function finishDebug() {
+        debugLines = [];
+        currentLine = 0
+
+        stepButton.disabled = true;
+        debugButton.disabled = false;
+        output.value += "Debugging finished.\n";
       }
 
-      function formatDebugCode(){
-    let code = `
-import asyncio
-import sys
-sys.stdout.reconfigure(encoding='utf-8')
-
-d = 0
-
-async def wait_for_debug():
-    global d
-    while d == 0:
-        await asyncio.sleep(0.1)
-    d = 0  # Reseta para aguardar o próximo passo
-
-async def debug_code():
-    global d
-    import time
-    line_number = 1  # Controla o número da linha
-`;
-
-
-    const linesSize = debugLines.length();
-    debugLines.forEach(
-        (line) => {
-            if (!line.startsWith('for ')){
-              const globalVars = Object.keys(pyodide.globals);
-              code += `
-    print(f"[DEBUG] ▶️ Executando linha {line_number}/${linesSize}: ${line.trim()}")
-
-    ${line}
-    
-    await wait_for_debug()
-    line_number += 1
-`;
-            }
+      async function stepDebug() {
+        printc(pyodide.globals.get("__debugFinishedFlag"));
+        if (pyodide.globals.get("__debugFinishedFlag") === 0){
+          pyodide.runPython("__debugCodeFlag = 1");
+          await new Promise(resolve => setTimeout(resolve, 100));
+          currentLine += 1;
+        } else {
+          finishDebug();
         }
-    );
-
-    // Garante que a função será chamada
-    code += `
-asyncio.create_task(debug_code())
-`;
-
-    return code;
-}
-
+      }
 
     </script>
 
