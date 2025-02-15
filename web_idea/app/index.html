@@ -15,8 +15,8 @@ b = 10
 c = a + b
 print(c)
     </textarea><br>
-    <button onclick="evaluatePython()">Run</button>
-    <button onclick="startDebug()" id="debugButton">Debug</button>
+    <button onclick="evaluatePython('evaluate')" id="evaluteButton">Run</button>
+    <button onclick="evaluatePython('debug')" id="debugButton">Debug</button>
     <button onclick="stepDebug()" disabled id="stepButton">Step</button>
     <button onclick="clearConsole()">Clear</button>
     <br />
@@ -27,6 +27,7 @@ print(c)
     <button onclick="setCode(2)">Código 2</button>
     <button onclick="setCode(3)">Código 3</button>
     <button onclick="setCode(4)">Código 4</button>
+    <button onclick="setCode(5)">Código 5</button>
 
     <div class="container">
       <h2>Tabela Gerada a Partir de um Objeto</h2>
@@ -40,79 +41,103 @@ print(c)
       </div>
   </div>
 
-    <script src="../utils/DebuggerMapper.js"></script>
+    <script src="./js/DebuggerMapper.js"></script>
 
     <script>
+      const runnerWorker = new Worker('worker.js');
+      let interruptBuffer = new Uint8Array(new SharedArrayBuffer(1));
+      runnerWorker.postMessage({ action: "loadBuffer", buffer:interruptBuffer });
+      runnerWorker.onmessage = function (event) {
+        if (event.data.status !== undefined){
+          if (event.data.status == 'WORKER_READY'){
+            console.log("cl: Worker Ready")
+          } 
+          else if (event.data.status == 'PRINT_VALUE'){
+            const message = event.data.message;
+            if (!message.startsWith("cl: ")){
+                output.value += message + "\n";
+                output.scrollTop = output.scrollHeight;
+            }
+          }
+          else if (event.data.status == 'DEBUG_STARTED'){
+            stepButton.disabled = false;
+            debugButton.disabled = true;
+            output.value = "Debugging started...\n";
+          }
+          else if (event.data.status == 'DEBUG_FINISHED'){
+            stepButton.disabled = true;
+            debugButton.disabled = false;
+            output.value += "Debugging finished.\n";
+          }
+          else if (event.data.status == 'UPDATE_TABLE'){
+            updateVarsTable(event.data.vars);
+          }
+          else if (event.data.status == 'STARTING_TO_RUN'){
+            running = true;
+            updateButton();
+          }
+          else if (event.data.status == 'FINISHING_TO_RUN'){
+            running = false;
+            updateButton();
+          }
+        }
+
+        console.log('cl: Resultado do Worker:', event.data);
+      };
+
       const output = document.getElementById("output");
       const code = document.getElementById("code");
       const stepButton = document.getElementById("stepButton");
       const debugButton = document.getElementById("debugButton");
+      const evaluteButton = document.getElementById("evaluteButton");
 
-      let pyodideReadyPromise = loadPyodide();
-      let debugLines = [];
-      let currentLine = 0;
-      let pyodide;
-      let debugVars = {};
+      let running = false;
 
       function addToOutput(s) {
         output.value += s + "\n";
         output.scrollTop = output.scrollHeight;
       }
 
+      function breakRun(){
+        interruptBuffer[0] = 2;
+        running = false;
+        updateButton()
+      }
+
       function clearConsole() {
-        currentLine = 0;
-        debugLines = [];
+        breakRun();
+
         stepButton.disabled = true;
         debugButton.disabled = false;
         output.value = "";
       }
 
-      async function evaluatePython() {
-        pyodide = await pyodideReadyPromise;
+      function updateButton() {
+            evaluteButton.textContent = running ? "Stop" : "Run";
+            debugButton.disabled = running;
+            stepButton.disabled = true;
+        }
+
+      async function evaluatePython(action) {
+        interruptBuffer[0] = 0;
         try {
-          let result = pyodide.runPython(code.value);
-          if (result != undefined) addToOutput(">>>\n" + result);
+          console.log("cl: RUNNING CODE " + `[${action}]`)
+          runnerWorker.postMessage({action:action, codeToRun:code.value})
         } catch (err) {
           addToOutput("Error: " + err);
         }
       }
 
-      async function startDebug() {
-        pyodide = await pyodideReadyPromise;
-        debugLines = code.value.split("\n");
-        debugFormatedCode = formatDebugCode(debugLines);
-        //console.log("Debuging: \n" + debugFormatedCode);
-        pyodide.runPythonAsync(debugFormatedCode);
-
-        stepButton.disabled = false;
-        debugButton.disabled = true;
-        output.value = "Debugging started...\n";
-      }
-
-      async function finishDebug() {
-        debugLines = [];
-        currentLine = 0
-
-        stepButton.disabled = true;
-        debugButton.disabled = false;
-        output.value += "Debugging finished.\n";
-      }
-
       async function stepDebug() {
-        if (pyodide.globals.get("__debugFinishedFlag") === 0){
-          pyodide.runPython("__debugCodeFlag = 1");
-          await new Promise(resolve => setTimeout(resolve, 100));
-          currentLine += 1;
-
-          debugVars = pyodide.globals.get("__currentVars").toJs();
-          criarTabela(debugVars);
-        } else {
-          finishDebug();
-          debugVars = {};
+        try {
+          console.log("cl: STEPED ")
+          runnerWorker.postMessage({action:"step"})
+        } catch (err) {
+          addToOutput("Error: " + err);
         }
       }
 
-      function criarTabela(obj) {
+      function updateVarsTable(obj) {
             const keys = Object.keys(obj); // Pega as chaves do objeto
             const tableHeader = document.getElementById("table-header");
             const tableBody = document.getElementById("table-body");
@@ -140,25 +165,6 @@ print(c)
 
     </script>
 
-
-
-
-    <script>
-        // Subscreve a função "console.log". Além de printar no console, também adiciona os argumentos da função no campo output.
-        (function() {
-            const originalLog = console.log;
-
-            console.log = function(...args) {
-                originalLog.apply(console, args);
-                const message = args.join(" ");
-
-                if (!message.startsWith("cl: ")){
-                    output.value += message + "\n";
-                    output.scrollTop = output.scrollHeight;
-                }
-            };
-        })();
-    </script>
     <script>
         function setCode(option) {
             let code = "";
@@ -171,6 +177,8 @@ print(c)
                 code = `a = 2\nif a % 2:\n  print('Par')\nelse:\n  print('Impar')`;
             } else if (option === 4) {
                 code = `def func(a, b):\n return a + b\nprint(func(1, 2))`;
+            } else if (option === 5) {
+                code = `import time\nfor s in range(10):\n  time.sleep(1)\n  print(s)\n`;
             }
             
             clearConsole();
