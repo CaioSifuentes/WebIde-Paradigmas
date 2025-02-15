@@ -1,156 +1,268 @@
+/* ---------------------- RESET BÁSICO ---------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-      /* Reset básico */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+/* ---------------------- ESTILO GERAL ---------------------- */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #28242c; /* Cor de fundo escura */
+}
 
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        font-family: Arial, sans-serif;
+/* ---------------------- CABEÇALHO ---------------------- */
+header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 36px;
+  color: white;
+}
 
-        background-color: #28242c;
-      }
+/* ---------------------- ESTILO DE TÍTULOS ESPECIAIS ---------------------- */
+.titlePink {
+  color: #ea7cc8;
+}
 
-      header {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: white
-      }
+.fa-lightbulb {
+  color:#ea7cc8
+}
 
-      main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 90%;
-        max-width: 800px;
-      }
+/* ---------------------- ÁREA PRINCIPAL ---------------------- */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 800px;
+}
 
-      /* Centralizar CodeContainer */
-      #codeContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 20px;
-      }
+/* ---------------------- CONTÊINER DO CÓDIGO ---------------------- */
+#codeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
 
-      /* Área de código e saída */
-      .code-output-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        max-width: 700px; /* Tamanho fixo para manter alinhado */
-      }
+/* ---------------------- CONTÊINER DA TABELA ---------------------- */
+#sideMenu {
+  opacity: 0; /* Esconde a div completamente */
+  visibility: hidden; /* Impede interações enquanto está fechado */
+  width: 0;
+  transition: all 0.3s ease;
+}
 
-      #code, #output {
-        width: 100%;
-        height: 200px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-      }
+#sideMenu.open {
+  opacity: 1; /* Torna visível */
+  visibility: visible; /* Permite interação */
+  width: 300px; /* A largura do menu */
+}
+/* Ajustes para o botão da seta */
+#toggleMenu {
+  position: fixed;
+  top: 50%; /* Centraliza verticalmente */
+  right: 0; /* Fica grudado à borda direita */
+  transform: translateY(-50%); /* Ajusta para que a seta fique centralizada verticalmente */
+  background-color: #6b46c1;
+  color: white;
+  padding: 30px 8px;
+  border-radius: 25px 0 0 25px; /* Deixa o botão com bordas arredondadas */
+  cursor: pointer;
+  z-index: 10; /* Garante que o botão fique sobre o menu */
+  transition: all 0.3s ease;
+  clip-path: polygon(100% 0, 100% 100%, 0 90%, 0 10%);
+}
 
-      .CodeMirror {
-        padding: 10px; /* Aumenta o espaçamento interno */
-        border-radius: 8px; /* Deixa as bordas arredondadas */
-        border: 1px solid #ccc; /* Adiciona uma borda visível */
-        overflow: hidden; /* Evita que o conteúdo ultrapasse os cantos arredondados */
-    }
+#toggleMenu.open {
+  background-color: #6d46c1;
+  transform: translateY(-50%) translateX(-300px); /* Move o botão junto com o menu */
+}
 
-      #output {
-        resize: none;
-        height: 150px;
-        background-color: #302c34;
-        color: white;
-        margin-top: 10px;
-        border-color: #ea7cc8;
-      }
+#toggleMenu:hover {
+  background-color: #906ce4;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 
-      .titlePink{
-        color: #ea7cc8;
-      }
+/* ---------------------- ÁREA DE CÓDIGO E SAÍDA ---------------------- */
+.code-output-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 700px; /* Define um tamanho máximo para manter alinhado */
+}
 
-      /* Botões alinhados */
-      .buttons-container {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 15px 0;
-      }
+#code, #output {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
 
-      button {
-        min-width: 100px;
-        padding: 10px 15px;
-        border: 1px solid transparent;
-        background: #1f1b2a;
-        color: white;
-        cursor: pointer;
-        border-radius: 25px;
-        font-size: 14px;
-        transition: transform 0.2s;
-      }
+/* ---------------------- ESTILIZAÇÃO DO CODEMIRROR ---------------------- */
+.CodeMirror {
+  padding: 10px; /* Aumenta o espaçamento interno */
+  border-radius: 8px; /* Deixa as bordas arredondadas */
+  border: 1px solid #ccc; /* Adiciona uma borda visível */
+  overflow: hidden; /* Evita que o conteúdo ultrapasse os cantos arredondados */
+}
 
-      button:disabled {
-        background: #2a2a30;
-        cursor: not-allowed;
-      }
+/* ---------------------- ESTILO DA ÁREA DE SAÍDA ---------------------- */
+#output {
+  resize: none;
+  height: 150px;
+  background-color: #302c34;
+  color: white;
+  margin-top: 10px;
+  border-color: #ea7cc8; /* Cor personalizada */
+}
 
-      button:not(:disabled):hover {
-        transform: scale(1.05);
-        border-color: #ea7cc8;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      }
+/* ---------------------- BOTÕES GERAIS ---------------------- */
+.buttons-container-m {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin: 15px 0 !important;
+}
 
-      /* Botões de código */
-      #codeButtons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 10px 0;
-      }
+.buttons-container-m button {
+  min-width: 100px !important;
+  padding: 4px 15px !important;
+  border: 1px solid transparent !important;
+  background: #1f1b2a !important;
+  color: white !important;
+  cursor: pointer !important;
+  border-radius: 25px !important;
+  font-size: 14px !important;
+  transition: transform 0.2s !important;
+}
 
-      /* Responsividade */
-      @media (max-width: 600px) {
-        #codeContainer {
-          width: 100%;
-        }
-        .code-output-container {
-          max-width: 100%;
-        }
-      }
+/* ---------------------- BOTÕES DESABILITADOS ---------------------- */
+button:disabled {
+  background: #2a2a30!important;
+  cursor: not-allowed !important;
+}
 
-      footer {
-        background-color: #333; /* Cor do fundo do rodapé */
-        color: white;
-        padding: 20px;
-        text-align: center;
-    }
+/* ---------------------- EFEITO HOVER DOS BOTÕES ---------------------- */
+.buttons-container-m button:not(:disabled):hover {
+  transform: scale(1.05) !important;
+  border-color: #ea7cc8 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
 
-    .tableContainer {
-        margin: 0 auto;
-        max-width: 1000px;
-    }
+/* ---------------------- BOTÕES DE CÓDIGO ---------------------- */
+#codeButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
 
-    .table-container {
-        overflow-x: auto; /* Permite rolagem horizontal se necessário */
-        margin-top: 20px;
-    }
+/* ---------------------- SCROLL ---------------------- */
+/* Largura da barra de rolagem */
+::-webkit-scrollbar {
+  width: 10px;
+}
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+/* Cor do fundo da barra de rolagem */
+::-webkit-scrollbar-track {
+  background: #1f1b2a;
+  border-radius: 10px;
+}
 
-    th, td {
-        padding: 8px;
-        border: 1px solid #ccc;
-    }
+/* Cor do "thumb" (a parte que se move) */
+::-webkit-scrollbar-thumb {
+  background: #6b46c1;
+  border-radius: 10px;
+}
+
+/* Cor do "thumb" ao passar o mouse */
+::-webkit-scrollbar-thumb:hover {
+  background: #906ce4;
+}
+
+
+/* ---------------------- RESPONSIVIDADE ---------------------- */
+@media (max-width: 600px) {
+  #codeContainer {
+    width: 100%;
+  }
+  .code-output-container {
+    max-width: 100%;
+  }
+}
+
+/* ---------------------- CONTÊINER DO MENU LATERAL ---------------------- */
+#sideMenu {
+  position: fixed; /* Garante que o menu lateral fique fixo na tela */
+  top: 0;
+  right: 0;
+  height: 100vh; /* Faz com que o menu ocupe toda a altura */
+  width: 0; /* Começa fechado */
+  overflow: hidden;
+  background-color: #1f1b2a;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  padding: 0; /* Removendo padding para evitar que o conteúdo fique fora */
+}
+
+#sideMenu.open {
+  width: 300px; /* Define a largura quando aberto */
+  opacity: 1;
+  visibility: visible;
+  padding: 20px; /* Adiciona padding apenas quando aberto */
+}
+
+/* ---------------------- BOTÃO DA SETA ---------------------- */
+#toggleMenu {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background-color: #6b46c1;
+  color: white;
+  padding: 30px 8px;
+  border-radius: 25px 0 0 25px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  clip-path: polygon(100% 0, 100% 100%, 0 90%, 0 10%);
+}
+
+#toggleMenu.open {
+  transform: translateY(-50%) translateX(-300px);
+}
+
+#toggleMenu:hover {
+  background-color: #906ce4;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* ---------------------- TABELA DENTRO DO MENU ---------------------- */
+#sideMenu table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #444;
+  color: white;
+  background-color: #2a2a30;
+}
+
+#sideMenu th, #sideMenu td {
+  padding: 8px;
+  border: 1px solid #555;
+}
+
+#sideMenu th {
+  background-color: #333;
+  text-align: left;
+}

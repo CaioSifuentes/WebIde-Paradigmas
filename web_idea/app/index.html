@@ -12,6 +12,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/python/python.min.js"></script>
 
+    <!-- CodeMirror JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <!-- Scripts do Projeto -->
     <script type="module" src="js/DocumentVars.js"></script>
     <script type="module" src="js/UserInterface.js"></script>
@@ -25,7 +29,7 @@
   </head>
   <body>
     <header>
-      <h1>Web💡IDE<span class="titlePink">a</span></h1>
+      <h1>Web <i class="fa-solid fa-lightbulb"></i> IDE<span class="titlePink">a</span></h1>
     </header>
     
     <main>
@@ -36,7 +40,7 @@
         </div>
       </div>
 
-      <div class="buttons-container">
+      <div class="buttons-container-m">
         <button id="evaluteButton">Run</button>
         <button id="debugButton">Debug</button>
         <button id="stepButton" disabled>Step</button>
@@ -50,20 +54,30 @@
         <button data-code-id="4">Example 4</button>
         <button data-code-id="5">Example 5</button>
       </div>
-    </main>
-    <footer>
-      <div class="tableContainer">
-        <h2>Debug Variables</h2>
-        <div class="table-container">
-            <table id="data-table">
-                <thead>
-                    <tr id="table-header"></tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
+
+      <!-- Container do menu lateral -->
+      <div class="fixed top-0 right-0 h-full flex">
+        <!-- Botão da seta -->
+        <button id="toggleMenu" class="bg-purple-700 text-white p-2 rounded-l-md">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <!-- Painel lateral que expande -->
+        <div id="sideMenu">
+            <h2 class="text-xl font-bold mb-4" style="color: white">Debug Variables</h2>
+            <br>
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse border border-gray-500">
+                    <thead>
+                        <tr id="table-header"></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
         </div>
       </div>
-    </footer>
+
+    </main>
   </body>
 
 </html>

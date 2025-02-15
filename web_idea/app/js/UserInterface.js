@@ -1,4 +1,4 @@
-import { output, stepButton, debugButton, evaluteButton } from "./DocumentVars.js";
+import { output, stepButton, debugButton, evaluteButton, toggleButton, menu, arrow } from "./DocumentVars.js";
 import { running, breakRun } from "../main.js";
 
 export function addToOutput(s) {
@@ -19,4 +19,18 @@ export function clearConsole() {
     debugButton.disabled = false;
     evaluteButton.disabled = false;
     output.value = "";
+}
+
+export function toggleSideMenu(){
+    console.log("A")
+    if (menu.style.width === "0px" || menu.style.width === "") {
+        menu.style.width = "300px"; // Abre o menu
+        toggleButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
+    } else {
+        menu.style.width = "0px"; // Fecha o menu
+        toggleButton.innerHTML = '<i class="fas fa-arrow-right"></i>';
+    }
+
+    menu.classList.toggle("open");
+    arrow.classList.toggle("open");
 }

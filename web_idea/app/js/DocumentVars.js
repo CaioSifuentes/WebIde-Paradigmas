@@ -1,5 +1,5 @@
 import { evaluatePython, stepDebug } from "../main.js"
-import { clearConsole } from "./UserInterface.js";
+import { clearConsole, toggleSideMenu } from "./UserInterface.js";
 import { setCode } from "./CodeSamples.js";
 
 export const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
@@ -17,6 +17,10 @@ export const debugButton = document.getElementById("debugButton");
 export const clearButton = document.getElementById("clearButton");
 export const codeButtons = document.getElementById("codeButtons");
 
+export const menu = document.getElementById("sideMenu");
+export const toggleButton = document.getElementById("toggleMenu");
+export const arrow = document.getElementById("toggleMenu");
+
 
 evaluteButton.onclick = () => evaluatePython('evaluate');
 debugButton.onclick = () => evaluatePython('debug');
@@ -27,6 +31,7 @@ codeButtons.onclick = (event) => {
         setCode(Number(event.target.dataset.codeId));
     }
 };
+arrow.onclick = () => toggleSideMenu();
 
 
 function addPressCoolDown(button, cooldown){
