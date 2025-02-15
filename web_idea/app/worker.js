@@ -1,5 +1,5 @@
 importScripts('https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js');
-importScripts("../utils/DebuggerMapper.js");
+importScripts("js/DebugMapper.js");
 
 let pyodide;
 let pyodideReady = false;

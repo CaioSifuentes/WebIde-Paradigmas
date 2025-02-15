@@ -1,189 +1,69 @@
 <!doctype html>
 <html>
   <head>
+    <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/python/python.min.js"></script>
+
+    <!-- Scripts do Projeto -->
+    <script type="module" src="js/DocumentVars.js"></script>
+    <script type="module" src="js/UserInterface.js"></script>
+    <script type="module" src="js/CodeSamples.js"></script>
+    <script type="module" src="js/DebugMapper.js"></script>
+    <script type="module" src="js/DebugTableManager.js"></script>
+    <script type="module" src="main.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    
   </head>
-
   <body>
-    <p>
-      You can execute any Python code. Just enter something in the box below and
-      click the button.
-    </p>
-    <textarea id="code" rows="5" cols="50">
-a = 5
-b = 10
-c = a + b
-print(c)
-    </textarea><br>
-    <button onclick="evaluatePython('evaluate')" id="evaluteButton">Run</button>
-    <button onclick="evaluatePython('debug')" id="debugButton">Debug</button>
-    <button onclick="stepDebug()" disabled id="stepButton">Step</button>
-    <button onclick="clearConsole()">Clear</button>
-    <br />
-    <br />
-    <div>Output:</div>
-    <textarea id="output" style="width: 100%;" rows="6" disabled></textarea>
-    <button onclick="setCode(1)">Código 1</button>
-    <button onclick="setCode(2)">Código 2</button>
-    <button onclick="setCode(3)">Código 3</button>
-    <button onclick="setCode(4)">Código 4</button>
-    <button onclick="setCode(5)">Código 5</button>
-
-    <div class="container">
-      <h2>Tabela Gerada a Partir de um Objeto</h2>
-      <div class="table-container">
-          <table id="data-table">
-              <thead>
-                  <tr id="table-header"></tr>
-              </thead>
-              <tbody id="table-body"></tbody>
-          </table>
+    <header>
+      <h1>Web💡IDE<span class="titlePink">a</span></h1>
+    </header>
+    
+    <main>
+      <div id="codeContainer">
+        <div class="code-output-container">
+          <textarea id="code" placeholder="Escreva seu código aqui"></textarea>
+          <textarea id="output" disabled></textarea>
+        </div>
       </div>
-  </div>
 
-    <script src="./js/DebuggerMapper.js"></script>
+      <div class="buttons-container">
+        <button id="evaluteButton">Run</button>
+        <button id="debugButton">Debug</button>
+        <button id="stepButton" disabled>Step</button>
+        <button id="clearButton">Clear</button>
+      </div>
 
-    <script>
-      const runnerWorker = new Worker('worker.js');
-      let interruptBuffer = new Uint8Array(new SharedArrayBuffer(1));
-      runnerWorker.postMessage({ action: "loadBuffer", buffer:interruptBuffer });
-      runnerWorker.onmessage = function (event) {
-        if (event.data.status !== undefined){
-          if (event.data.status == 'WORKER_READY'){
-            console.log("cl: Worker Ready")
-          } 
-          else if (event.data.status == 'PRINT_VALUE'){
-            const message = event.data.message;
-            if (!message.startsWith("cl: ")){
-                output.value += message + "\n";
-                output.scrollTop = output.scrollHeight;
-            }
-          }
-          else if (event.data.status == 'DEBUG_STARTED'){
-            stepButton.disabled = false;
-            debugButton.disabled = true;
-            output.value = "Debugging started...\n";
-          }
-          else if (event.data.status == 'DEBUG_FINISHED'){
-            stepButton.disabled = true;
-            debugButton.disabled = false;
-            output.value += "Debugging finished.\n";
-          }
-          else if (event.data.status == 'UPDATE_TABLE'){
-            updateVarsTable(event.data.vars);
-          }
-          else if (event.data.status == 'STARTING_TO_RUN'){
-            running = true;
-            updateButton();
-          }
-          else if (event.data.status == 'FINISHING_TO_RUN'){
-            running = false;
-            updateButton();
-          }
-        }
-
-        console.log('cl: Resultado do Worker:', event.data);
-      };
-
-      const output = document.getElementById("output");
-      const code = document.getElementById("code");
-      const stepButton = document.getElementById("stepButton");
-      const debugButton = document.getElementById("debugButton");
-      const evaluteButton = document.getElementById("evaluteButton");
-
-      let running = false;
-
-      function addToOutput(s) {
-        output.value += s + "\n";
-        output.scrollTop = output.scrollHeight;
-      }
-
-      function breakRun(){
-        interruptBuffer[0] = 2;
-        running = false;
-        updateButton()
-      }
-
-      function clearConsole() {
-        breakRun();
-
-        stepButton.disabled = true;
-        debugButton.disabled = false;
-        output.value = "";
-      }
-
-      function updateButton() {
-            evaluteButton.textContent = running ? "Stop" : "Run";
-            debugButton.disabled = running;
-            stepButton.disabled = true;
-        }
-
-      async function evaluatePython(action) {
-        interruptBuffer[0] = 0;
-        try {
-          console.log("cl: RUNNING CODE " + `[${action}]`)
-          runnerWorker.postMessage({action:action, codeToRun:code.value})
-        } catch (err) {
-          addToOutput("Error: " + err);
-        }
-      }
-
-      async function stepDebug() {
-        try {
-          console.log("cl: STEPED ")
-          runnerWorker.postMessage({action:"step"})
-        } catch (err) {
-          addToOutput("Error: " + err);
-        }
-      }
-
-      function updateVarsTable(obj) {
-            const keys = Object.keys(obj); // Pega as chaves do objeto
-            const tableHeader = document.getElementById("table-header");
-            const tableBody = document.getElementById("table-body");
-
-            // Limpa a tabela antes de adicionar dados
-            tableHeader.innerHTML = "";
-            tableBody.innerHTML = "";
-
-            // Criar cabeçalhos
-            keys.forEach(key => {
-                const th = document.createElement("th");
-                th.textContent = key;
-                tableHeader.appendChild(th);
-            });
-
-            // Criar uma linha com os dados do objeto
-            const tr = document.createElement("tr");
-            keys.forEach(key => {
-                const td = document.createElement("td");
-                td.textContent = obj[key];
-                tr.appendChild(td);
-            });
-            tableBody.appendChild(tr);
-        }
-
-    </script>
-
-    <script>
-        function setCode(option) {
-            let code = "";
-            
-            if (option === 1) {
-                code = `a = 5\nb = 10\nc = a + b\nprint(c)`;
-            } else if (option === 2) {
-                code = `a = 0\nfor _ in range(10):\n   a += 1\n   a += 2\nprint(a)`;
-            } else if (option === 3) {
-                code = `a = 2\nif a % 2:\n  print('Par')\nelse:\n  print('Impar')`;
-            } else if (option === 4) {
-                code = `def func(a, b):\n return a + b\nprint(func(1, 2))`;
-            } else if (option === 5) {
-                code = `import time\nfor s in range(10):\n  time.sleep(1)\n  print(s)\n`;
-            }
-            
-            clearConsole();
-            document.getElementById("code").value = code;
-        }
-    </script>
+      <div id="codeButtons">
+        <button data-code-id="1">Example 1</button>
+        <button data-code-id="2">Example 2</button>
+        <button data-code-id="3">Example 3</button>
+        <button data-code-id="4">Example 4</button>
+        <button data-code-id="5">Example 5</button>
+      </div>
+    </main>
+    <footer>
+      <div class="tableContainer">
+        <h2>Debug Variables</h2>
+        <div class="table-container">
+            <table id="data-table">
+                <thead>
+                    <tr id="table-header"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+      </div>
+    </footer>
   </body>
+
 </html>
