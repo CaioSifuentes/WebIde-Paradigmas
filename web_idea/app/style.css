@@ -203,21 +203,45 @@ button:disabled {
 /* ---------------------- TABELA DENTRO DO MENU ---------------------- */
 #sideMenu table {
   width: 100%;
+  max-width: 100%; /* Garante que a tabela não ultrapasse a largura do seu contêiner */
   border-collapse: collapse;
   border: 1px solid #444;
   color: white;
   background-color: #2a2a30;
+  table-layout: fixed; /* Garante que a tabela ocupe um espaço fixo */
 }
 
 #sideMenu th, #sideMenu td {
   padding: 8px;
   border: 1px solid #555;
+  word-wrap: break-word; /* Quebra a palavra para caber dentro da célula */
 }
 
 #sideMenu th {
   background-color: #333;
   text-align: left;
 }
+
+#sideMenu tbody {
+  max-height: 300px; /* Define a altura máxima da área do corpo da tabela */
+  overflow-y: auto; /* Habilita a rolagem vertical */
+}
+
+#sideMenu td {
+  word-wrap: break-word; /* Quebra as palavras longas para a linha seguinte */
+  overflow: hidden; /* Evita que o conteúdo transborde das células */
+}
+
+#sideMenu th, #sideMenu td {
+  width: 50%; /* Ajusta a largura das células */
+}
+
+#sideMenu .overflow-x-auto {
+  border: 1px solid #444;
+  overflow: auto;
+  height: 850px;
+}
+
 
 /* ---------------------- SCROLL ---------------------- */
 ::-webkit-scrollbar {

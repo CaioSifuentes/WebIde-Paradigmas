@@ -5,19 +5,24 @@ export function updateVarsTable(obj) {
     tableHeader.innerHTML = "";
     tableBody.innerHTML = "";
 
-    const keys = Object.keys(obj);
-    keys.forEach(key => {
-        const th = document.createElement("th");
-        th.textContent = key;
-        tableHeader.appendChild(th);
-    });
+    const thKey = document.createElement("th");
+    thKey.textContent = "Variables";
+    tableHeader.appendChild(thKey);
+    const thValue = document.createElement("th");
+    thValue.textContent = "Values";
+    tableHeader.appendChild(thValue);
 
-    const tr = document.createElement("tr");
-    keys.forEach(key => {
-        const td = document.createElement("td");
-        td.textContent = obj[key];
-        tr.appendChild(td);
-    });
+    Object.entries(obj).forEach(([key, value]) => {
+        const tr = document.createElement("tr");
 
-    tableBody.appendChild(tr);
+        const tdKey = document.createElement("td");
+        tdKey.textContent = key;
+        tr.appendChild(tdKey);
+
+        const tdValue = document.createElement("td");
+        tdValue.textContent = value;
+        tr.appendChild(tdValue);
+
+        tableBody.appendChild(tr);
+    });
 }
