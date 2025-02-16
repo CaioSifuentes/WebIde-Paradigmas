@@ -11,6 +11,7 @@ async function initPyodide() {
   pyodide = await loadPyodide();
 
   pyodideReady = true;
+  postMessage({status: "UPDATE_TABLE", vars:{}})
   postMessage({status: 'WORKER_READY'});
 }
 
@@ -18,7 +19,8 @@ async function startDebug(code) {
     debugLines = code.split("\n");
     debugFormatedCode = formatDebugCode(debugLines);
 
-    pyodide.runPythonAsync(debugFormatedCode).catch(
+    pyodide.runPythonAsync(debugFormatedCode)
+    .catch(
         (error) => {
             postMessage({status: "DEBUG_FINISHED"});
             if (!error.toString().includes("KeyboardInterrupt")) {
@@ -26,6 +28,7 @@ async function startDebug(code) {
             }
         }
     );
+
     postMessage({status: "DEBUG_STARTED"})
 }
 
@@ -43,12 +46,14 @@ async function stepDebug() {
       currentLine += 1;
 
       const debugVars = pyodide.globals.get("__currentVars").toJs();
+      const currentLineVar = pyodide.globals.get("__RealVisibleLine");
       postMessage({status: "UPDATE_TABLE", vars:JSON.parse(JSON.stringify(debugVars))})
+      postMessage({status: "HIGHLIGHT_LINE", currentLine:currentLineVar})
     } else {
       finishDebug();
       postMessage({status: "UPDATE_TABLE", vars:{}})
     }
-  }
+}
 
 (function() {
     const originalLog = console.log;
@@ -73,7 +78,7 @@ onmessage = async function(event) {
             .then(() => this.postMessage({ status: "FINISHING_TO_RUN"}))
             .catch(
                 (error) => {
-                    this.postMessage({ status: "BREAK" })
+                    this.postMessage({ status: "BREAK", error:error})
                     if (!error.toString().includes("KeyboardInterrupt")) {
                         console.log("[ERROR] -> " + error)
                     }

@@ -12,6 +12,7 @@ __debugFinishedFlag = 0
 __currentVars = {}
 
 __visibleLines = {}
+__RealVisibleLine = 0
         
 async def wait_for_debug():
     global __debugCodeFlag
@@ -20,7 +21,7 @@ async def wait_for_debug():
     __debugCodeFlag = 0
         
 async def debug_code():
-    global __debugCodeFlag, __debugFinishedFlag
+    global __debugCodeFlag, __debugFinishedFlag, __RealVisibleLine
 `;
         
     const endCode = `
@@ -29,16 +30,18 @@ asyncio.create_task(debug_code())
 `;
 
     let middleCode = "";
-    let visibleLineCounter = 1;
+    let visibleLineCounter = 0;
     let functionList = [];
+    
     lineList = lineList.filter(line => line.trim() !== "");
     lineList.forEach(
         (line) => {
+            visibleLineCounter = debugLines.indexOf(line) + 1 || 0;
             const trimmedLine = line.trim();
             const indent = line.substring(0, line.indexOf(trimmedLine));
             let preDefCode = "" // Para tornar capaz de Debugar funções.
             let preCallDefCode = ""; // Para tornar capaz de Debugar funções.
-            if (line.startsWith('for ') || line.trim().startsWith('if ') || line.trim().startsWith('elif ') || line.trim().startsWith('else:') || line.trim().startsWith('def ') || line.trim().startsWith('await ')  || line.trim().startsWith('async ')){
+            if (line.trim().startsWith('for ') || line.trim().startsWith('if ') || line.trim().startsWith('elif ') || line.trim().startsWith('else:') || line.trim().startsWith('def ') || line.trim().startsWith('await ')  || line.trim().startsWith('async ')){
                 if (line.startsWith('def ')){ // Para tornar capaz de Debugar funções.
                     preDefCode = "async ";
                     const funcName = line.match(/def\s+(\w+)\s*\(/)?.[1];
@@ -52,15 +55,16 @@ asyncio.create_task(debug_code())
                 middleCode += `
     ${indent}__realLine = inspect.currentframe().f_lineno
     ${indent}__visibleLines[__realLine] = ${visibleLineCounter}
-    ${indent}print(f"[DEBUG] -> Executando linha {__visibleLines[__realLine]}: [ ${trimmedLine} ]")
+    ${indent}__RealVisibleLine = __visibleLines[__realLine]
+    ${indent}print(f"[DEBUG] -> Executando linha {__RealVisibleLine}: [ ${trimmedLine} ]")
     ${indent}${preCallDefCode == ""? line.trim() : preCallDefCode.trim()}
     ${indent}await wait_for_debug()
     ${indent}__currentVars.update({k: v for k, v in inspect.currentframe().f_locals.items() if (not k.startswith("__") and not callable(v))})
     `;
             }
-            visibleLineCounter++;
+            //console.log("cl: linha -> " + visibleLineCounter);
     });
-    //console.log("cl: "+startCode+middleCode+endCode)
+    console.log("cl: "+startCode+middleCode+endCode)
     return startCode + middleCode + endCode;  
 }
 

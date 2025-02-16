@@ -1,4 +1,4 @@
-import { output, stepButton, debugButton, evaluteButton, toggleButton, menu, arrow, clearButton } from "./DocumentVars.js";
+import { output, stepButton, debugButton, evaluteButton, toggleButton, menu, arrow, clearButton, editor } from "./DocumentVars.js";
 import { running, breakRun } from "../main.js";
 
 export function addToOutput(s) {
@@ -8,12 +8,14 @@ export function addToOutput(s) {
 
 export function updateButton() {
     evaluteButton.innerHTML = running ? `<i class="fa-solid fa-stop" style="color:rgb(182, 36, 36)"></i>` : `<i class="fa-solid fa-play" style="color:rgb(141, 209, 39)"></i>`;
+    clearButton.innerHTML = running ? `<i class="fa-regular fa-circle-stop" style="color:rgb(182, 36, 36)"></i>` : `<i class="fa-solid fa-broom"></i>`;
     debugButton.disabled = running;
     stepButton.disabled = true;
 }
 
 export function clearConsole() {
     breakRun();
+    highlightVisibleLine(0);
     clearButton.innerHTML = `<i class="fa-solid fa-broom"></i>`
 
     stepButton.disabled = true;
@@ -34,4 +36,31 @@ export function toggleSideMenu(){
 
     menu.classList.toggle("open");
     arrow.classList.toggle("open");
+}
+
+let highlightedLine = -1;
+
+export function highlightVisibleLine(line) {
+    const totalLines = editor.lineCount();
+    for (let i = 0; i < totalLines; i++) {
+        editor.removeLineClass(i, 'background', 'highlighted-line');
+    }
+
+    if (line) {
+        const lineToHighlight = line - 1;
+
+        // Destacar a linha
+        editor.addLineClass(lineToHighlight, 'background', 'highlighted-line');
+    }
+}
+
+export function getFirstNonEmptyLine() {
+    for (let i = 0; i < editor.lineCount(); i++) {
+        const lineContent = editor.getLine(i).trim();
+        if (lineContent.length > 0) {
+            return i + 1;
+        }
+    }
+    
+    return 0;
 }

@@ -1,12 +1,20 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web 💡 IDEa</title>
+
     <!-- Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.js"></script>
 
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.0/theme/idea.css">
+
+
+
 
     <!-- CodeMirror JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
@@ -22,6 +30,7 @@
     <script type="module" src="js/CodeSamples.js"></script>
     <script type="module" src="js/DebugMapper.js"></script>
     <script type="module" src="js/DebugTableManager.js"></script>
+    <script type="module" src="js/PageColorModifier.js"></script>
     <script type="module" src="main.js"></script>
 
     <link rel="stylesheet" href="style.css">
@@ -33,6 +42,10 @@
     </header>
     
     <main>
+      <div id="cornerContainer">
+        <button id="togglePaletteBtn" style="color: var(--color-border);"><i class="fa-solid fa-sun"></i></button>
+      </div>
+
       <div class="container-flex">
         <div class="buttons-container-m">
           <button id="evaluteButton"><i class="fa-solid fa-play" style="color:rgb(141, 209, 39)"></i></button>
@@ -43,7 +56,7 @@
         <div id="codeContainer">
           <div class="code-output-container">
             <textarea id="code" placeholder="Escreva seu código aqui"></textarea>
-            <textarea id="output" disabled></textarea>
+            <textarea id="output" disabled style="color: var(--color-text);;"></textarea>
           </div>
         </div>
       </div>

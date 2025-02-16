@@ -1,3 +1,22 @@
+:root {
+  --color-text: #ffffff;
+  --color-bg-primary: #28242c;
+  --color-accent: #ea7cc8;
+  --color-white: #ffffff;
+  --color-bg-secondary: #1f1b2a;
+  --color-shadow: rgba(0, 0, 0, 0.2);
+  --color-bg-dark: #2a2a30;
+  --color-border: #ccc;
+  --color-output-bg: #302c34;
+  --color-output-border: #885076;
+  --color-border-dark: #444;
+  --color-border-alt: #555;
+  --color-table-header: #333;
+  --color-scrollbar-hover: #e08dc6;
+
+  --font-size: 16px;
+}
+
 /* ---------------------- RESET BÁSICO ---------------------- */
 * {
   margin: 0;
@@ -13,7 +32,7 @@ body {
   justify-content: center;
   height: 100vh;
   font-family: Arial, sans-serif;
-  background-color: #28242c; /* Cor de fundo escura */
+  background-color: var(--color-bg-primary);
 }
 
 /* ---------------------- CABEÇALHO ---------------------- */
@@ -21,16 +40,16 @@ header {
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
-  color: white;
+  color: var(--color-text);
 }
 
 /* ---------------------- ESTILO DE TÍTULOS ESPECIAIS ---------------------- */
 .titlePink {
-  color: #ea7cc8;
+  color: var(--color-accent);
 }
 
 .fa-lightbulb {
-  color: #ea7cc8;
+  color: var(--color-accent);
 }
 
 /* ---------------------- ÁREA PRINCIPAL ---------------------- */
@@ -44,32 +63,32 @@ main {
 /* ---------------------- CONTÊINER FLEXÍVEL PARA POSICIONAMENTO ---------------------- */
 .container-flex {
   display: flex;
-  align-items: flex-start; /* Alinha os elementos no topo */
-  gap: 20px; /* Adiciona espaçamento entre os elementos */
+  align-items: flex-start;
+  gap: 20px;
   width: 100%;
 }
 
 /* ---------------------- CONTÊINER DOS BOTÕES ---------------------- */
 .buttons-container-m {
   display: flex;
-  flex-direction: column; /* Empilha os botões na vertical */
-  align-items: flex-start; /* Alinha à esquerda */
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
 }
 
 /* ---------------------- BOTÕES GERAIS ---------------------- */
 .buttons-container-m button {
-  width: 50px;  /* Define um tamanho fixo */
-  height: 50px; /* Mesmo valor da largura para criar um círculo */
-  padding: 0;   /* Remove o padding interno */
+  width: 50px;
+  height: 50px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
-  background: #1f1b2a;
-  color: white;
+  background: var(--color-bg-secondary);
+  color: var(--color-white);
   cursor: pointer;
-  border-radius: 50%; /* Torna o botão circular */
+  border-radius: 50%;
   font-size: 16px;
   transition: transform 0.2s;
 }
@@ -79,31 +98,66 @@ main {
   min-height: 30px;
   padding: 5px 5px;
   border: 1px solid transparent;
-  background: #1f1b2a;
-  color: white;
+  background: var(--color-bg-secondary);
+  color: var(--color-white);
   cursor: pointer;
   border-radius: 50%;
   font-size: 14px;
   transition: transform 0.2s;
 }
 
+/* ---------------------- BOTÕES DO CANTO ---------------------- */
+
+#cornerContainer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column; /* Empilha os botões verticalmente */
+  gap: 10px; /* Espaço entre os botões */
+}
+
+#cornerContainer button {
+  height: 38px;
+  width: 38px;
+  padding: 3px;
+  background-color: var(--color-bg-secondary);
+  border-color: var(--color-accent);
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+#cornerContainer #text-button {
+  font-size: 12px;
+}
+
+#cornerContainer button:hover {
+  transform: scale(1.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 10px var(--color-shadow);
+}
+
+
 /* ---------------------- EFEITO HOVER DOS BOTÕES ---------------------- */
 .buttons-container-m button:not(:disabled):hover {
   transform: scale(1.1);
-  border-color: #ea7cc8;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 10px var(--color-shadow);
 }
 
 .sample-code-buttons button:not(:disabled):hover {
   transform: scale(1.05);
-  border-color: #ea7cc8;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 10px var(--color-shadow);
 }
-
 
 /* ---------------------- BOTÕES DESABILITADOS ---------------------- */
 button:disabled {
-  background: #2a2a30;
+  background: var(--color-bg-dark);
   cursor: not-allowed;
 }
 
@@ -124,13 +178,13 @@ button:disabled {
   width: 100%;
 }
 
-#code, #output {
+#output {
   width: 100%;
   height: 200px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* ---------------------- ESTILIZAÇÃO DO CODEMIRROR ---------------------- */
@@ -139,18 +193,32 @@ button:disabled {
   min-height: 550px !important;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
+
+.CodeMirror-gutters {
+  background: var(--cm-background) !important;
+  border-right: none !important;
+}
+
+.CodeMirror {
+  font-size: var(--font-size) !important; /* Altere para o tamanho desejado */
+}
+
+.highlighted-line {
+  background-color: rgba(255, 255, 0, 0.2); /* Um fundo amarelo claro, por exemplo */
+}
+
 
 /* ---------------------- ESTILO DA ÁREA DE SAÍDA ---------------------- */
 #output {
   resize: none;
   height: 250px;
-  background-color: #302c34;
-  color: white;
+  background-color: var(--color-output-bg);
+  color: var(--color-white);
   margin-top: 10px;
-  border-color: #885076;
+  border-color: var(--color-output-border);
 }
 
 /* ---------------------- MENU LATERAL ---------------------- */
@@ -161,7 +229,7 @@ button:disabled {
   height: 100vh;
   width: 0;
   overflow: hidden;
-  background-color: #1f1b2a;
+  background-color: var(--color-bg-secondary);
   transition: width 0.3s ease, opacity 0.3s ease;
   opacity: 0;
   visibility: hidden;
@@ -181,8 +249,8 @@ button:disabled {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  background-color: #ea7cc8;
-  color: white;
+  background-color: var(--color-accent);
+  color: var(--color-white);
   padding: 30px 8px;
   border-radius: 25px 0 0 25px;
   cursor: pointer;
@@ -196,52 +264,51 @@ button:disabled {
 }
 
 #toggleMenu:hover {
-  background-color: #ea7cc8;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--color-accent);
+  box-shadow: 0 4px 10px var(--color-shadow);
 }
 
 /* ---------------------- TABELA DENTRO DO MENU ---------------------- */
 #sideMenu table {
   width: 100%;
-  max-width: 100%; /* Garante que a tabela não ultrapasse a largura do seu contêiner */
+  max-width: 100%;
   border-collapse: collapse;
-  border: 1px solid #444;
-  color: white;
-  background-color: #2a2a30;
-  table-layout: fixed; /* Garante que a tabela ocupe um espaço fixo */
+  border: 1px solid var(--color-border-dark);
+  color: var(--color-white);
+  background-color: var(--color-bg-dark);
+  table-layout: fixed;
 }
 
 #sideMenu th, #sideMenu td {
   padding: 8px;
-  border: 1px solid #555;
-  word-wrap: break-word; /* Quebra a palavra para caber dentro da célula */
+  border: 1px solid var(--color-border-alt);
+  word-wrap: break-word;
 }
 
 #sideMenu th {
-  background-color: #333;
+  background-color: var(--color-table-header);
   text-align: left;
 }
 
 #sideMenu tbody {
-  max-height: 300px; /* Define a altura máxima da área do corpo da tabela */
-  overflow-y: auto; /* Habilita a rolagem vertical */
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 #sideMenu td {
-  word-wrap: break-word; /* Quebra as palavras longas para a linha seguinte */
-  overflow: hidden; /* Evita que o conteúdo transborde das células */
+  word-wrap: break-word;
+  overflow: hidden;
 }
 
 #sideMenu th, #sideMenu td {
-  width: 50%; /* Ajusta a largura das células */
+  width: 50%;
 }
 
 #sideMenu .overflow-x-auto {
-  border: 1px solid #444;
+  border: 1px solid var(--color-border-dark);
   overflow: auto;
   height: 850px;
 }
-
 
 /* ---------------------- SCROLL ---------------------- */
 ::-webkit-scrollbar {
@@ -249,15 +316,15 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1f1b2a;
+  background: var(--color-bg-secondary);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ea7cc8;
+  background: var(--color-accent);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e08dc6;
+  background: var(--color-scrollbar-hover);
 }
