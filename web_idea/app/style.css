@@ -20,7 +20,7 @@ body {
 header {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 36px;
+  font-size: 24px;
   color: white;
 }
 
@@ -30,7 +30,7 @@ header {
 }
 
 .fa-lightbulb {
-  color:#ea7cc8
+  color: #ea7cc8;
 }
 
 /* ---------------------- ÁREA PRINCIPAL ---------------------- */
@@ -39,7 +39,71 @@ main {
   flex-direction: column;
   align-items: center;
   width: 90%;
-  max-width: 800px;
+}
+
+/* ---------------------- CONTÊINER FLEXÍVEL PARA POSICIONAMENTO ---------------------- */
+.container-flex {
+  display: flex;
+  align-items: flex-start; /* Alinha os elementos no topo */
+  gap: 20px; /* Adiciona espaçamento entre os elementos */
+  width: 100%;
+}
+
+/* ---------------------- CONTÊINER DOS BOTÕES ---------------------- */
+.buttons-container-m {
+  display: flex;
+  flex-direction: column; /* Empilha os botões na vertical */
+  align-items: flex-start; /* Alinha à esquerda */
+  gap: 10px;
+}
+
+/* ---------------------- BOTÕES GERAIS ---------------------- */
+.buttons-container-m button {
+  width: 50px;  /* Define um tamanho fixo */
+  height: 50px; /* Mesmo valor da largura para criar um círculo */
+  padding: 0;   /* Remove o padding interno */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  background: #1f1b2a;
+  color: white;
+  cursor: pointer;
+  border-radius: 50%; /* Torna o botão circular */
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+
+.sample-code-buttons button {
+  min-width: 100px;
+  padding: 5px 15px;
+  border: 1px solid transparent;
+  background: #1f1b2a;
+  color: white;
+  cursor: pointer;
+  border-radius: 25px;
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+
+/* ---------------------- EFEITO HOVER DOS BOTÕES ---------------------- */
+.buttons-container-m button:not(:disabled):hover {
+  transform: scale(1.1);
+  border-color: #ea7cc8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.sample-code-buttons button:not(:disabled):hover {
+  transform: scale(1.05);
+  border-color: #ea7cc8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ---------------------- BOTÕES DESABILITADOS ---------------------- */
+button:disabled {
+  background: #2a2a30;
+  cursor: not-allowed;
 }
 
 /* ---------------------- CONTÊINER DO CÓDIGO ---------------------- */
@@ -52,51 +116,11 @@ main {
   margin-bottom: 20px;
 }
 
-/* ---------------------- CONTÊINER DA TABELA ---------------------- */
-#sideMenu {
-  opacity: 0; /* Esconde a div completamente */
-  visibility: hidden; /* Impede interações enquanto está fechado */
-  width: 0;
-  transition: all 0.3s ease;
-}
-
-#sideMenu.open {
-  opacity: 1; /* Torna visível */
-  visibility: visible; /* Permite interação */
-  width: 300px; /* A largura do menu */
-}
-/* Ajustes para o botão da seta */
-#toggleMenu {
-  position: fixed;
-  top: 50%; /* Centraliza verticalmente */
-  right: 0; /* Fica grudado à borda direita */
-  transform: translateY(-50%); /* Ajusta para que a seta fique centralizada verticalmente */
-  background-color: #6b46c1;
-  color: white;
-  padding: 30px 8px;
-  border-radius: 25px 0 0 25px; /* Deixa o botão com bordas arredondadas */
-  cursor: pointer;
-  z-index: 10; /* Garante que o botão fique sobre o menu */
-  transition: all 0.3s ease;
-  clip-path: polygon(100% 0, 100% 100%, 0 90%, 0 10%);
-}
-
-#toggleMenu.open {
-  background-color: #6d46c1;
-  transform: translateY(-50%) translateX(-300px); /* Move o botão junto com o menu */
-}
-
-#toggleMenu:hover {
-  background-color: #906ce4;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
 /* ---------------------- ÁREA DE CÓDIGO E SAÍDA ---------------------- */
 .code-output-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 700px; /* Define um tamanho máximo para manter alinhado */
 }
 
 #code, #output {
@@ -110,117 +134,44 @@ main {
 
 /* ---------------------- ESTILIZAÇÃO DO CODEMIRROR ---------------------- */
 .CodeMirror {
-  padding: 10px; /* Aumenta o espaçamento interno */
-  border-radius: 8px; /* Deixa as bordas arredondadas */
-  border: 1px solid #ccc; /* Adiciona uma borda visível */
-  overflow: hidden; /* Evita que o conteúdo ultrapasse os cantos arredondados */
+  width: 100%;
+  min-height: 550px !important;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  overflow: hidden;
 }
 
 /* ---------------------- ESTILO DA ÁREA DE SAÍDA ---------------------- */
 #output {
   resize: none;
-  height: 150px;
+  height: 250px;
   background-color: #302c34;
   color: white;
   margin-top: 10px;
-  border-color: #ea7cc8; /* Cor personalizada */
+  border-color: #ea7cc8;
 }
 
-/* ---------------------- BOTÕES GERAIS ---------------------- */
-.buttons-container-m {
-  display: flex !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  margin: 15px 0 !important;
-}
-
-.buttons-container-m button {
-  min-width: 100px !important;
-  padding: 4px 15px !important;
-  border: 1px solid transparent !important;
-  background: #1f1b2a !important;
-  color: white !important;
-  cursor: pointer !important;
-  border-radius: 25px !important;
-  font-size: 14px !important;
-  transition: transform 0.2s !important;
-}
-
-/* ---------------------- BOTÕES DESABILITADOS ---------------------- */
-button:disabled {
-  background: #2a2a30!important;
-  cursor: not-allowed !important;
-}
-
-/* ---------------------- EFEITO HOVER DOS BOTÕES ---------------------- */
-.buttons-container-m button:not(:disabled):hover {
-  transform: scale(1.05) !important;
-  border-color: #ea7cc8 !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* ---------------------- BOTÕES DE CÓDIGO ---------------------- */
-#codeButtons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 10px 0;
-}
-
-/* ---------------------- SCROLL ---------------------- */
-/* Largura da barra de rolagem */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Cor do fundo da barra de rolagem */
-::-webkit-scrollbar-track {
-  background: #1f1b2a;
-  border-radius: 10px;
-}
-
-/* Cor do "thumb" (a parte que se move) */
-::-webkit-scrollbar-thumb {
-  background: #6b46c1;
-  border-radius: 10px;
-}
-
-/* Cor do "thumb" ao passar o mouse */
-::-webkit-scrollbar-thumb:hover {
-  background: #906ce4;
-}
-
-
-/* ---------------------- RESPONSIVIDADE ---------------------- */
-@media (max-width: 600px) {
-  #codeContainer {
-    width: 100%;
-  }
-  .code-output-container {
-    max-width: 100%;
-  }
-}
-
-/* ---------------------- CONTÊINER DO MENU LATERAL ---------------------- */
+/* ---------------------- MENU LATERAL ---------------------- */
 #sideMenu {
-  position: fixed; /* Garante que o menu lateral fique fixo na tela */
+  position: fixed;
   top: 0;
   right: 0;
-  height: 100vh; /* Faz com que o menu ocupe toda a altura */
-  width: 0; /* Começa fechado */
+  height: 100vh;
+  width: 0;
   overflow: hidden;
   background-color: #1f1b2a;
   transition: width 0.3s ease, opacity 0.3s ease;
   opacity: 0;
   visibility: hidden;
-  padding: 0; /* Removendo padding para evitar que o conteúdo fique fora */
+  padding: 0;
 }
 
 #sideMenu.open {
-  width: 300px; /* Define a largura quando aberto */
+  width: 300px;
   opacity: 1;
   visibility: visible;
-  padding: 20px; /* Adiciona padding apenas quando aberto */
+  padding: 20px;
 }
 
 /* ---------------------- BOTÃO DA SETA ---------------------- */
@@ -265,4 +216,23 @@ button:disabled {
 #sideMenu th {
   background-color: #333;
   text-align: left;
+}
+
+/* ---------------------- SCROLL ---------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1b2a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b46c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #906ce4;
 }
