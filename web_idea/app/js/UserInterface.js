@@ -1,4 +1,4 @@
-import { output, stepButton, debugButton, evaluteButton, toggleButton, menu, arrow } from "./DocumentVars.js";
+import { output, stepButton, debugButton, evaluteButton, toggleButton, menu, arrow, clearButton } from "./DocumentVars.js";
 import { running, breakRun } from "../main.js";
 
 export function addToOutput(s) {
@@ -14,6 +14,7 @@ export function updateButton() {
 
 export function clearConsole() {
     breakRun();
+    clearButton.innerHTML = `<i class="fa-solid fa-broom"></i>`
 
     stepButton.disabled = true;
     debugButton.disabled = false;

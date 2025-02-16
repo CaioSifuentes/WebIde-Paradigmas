@@ -60,7 +60,7 @@ asyncio.create_task(debug_code())
             }
             visibleLineCounter++;
     });
-    console.log(startCode+middleCode+endCode)
+    //console.log("cl: "+startCode+middleCode+endCode)
     return startCode + middleCode + endCode;  
 }
 

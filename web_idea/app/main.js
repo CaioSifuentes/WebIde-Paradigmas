@@ -1,4 +1,4 @@
-import { output, stepButton, debugButton, evaluteButton, editor } from "./js/DocumentVars.js"
+import { output, stepButton, debugButton, evaluteButton, editor, clearButton } from "./js/DocumentVars.js"
 import { updateVarsTable } from "./js/DebugTableManager.js";
 import { updateButton } from "./js/UserInterface.js";
 
@@ -26,6 +26,7 @@ runnerWorker.onmessage = function (event) {
             case 'DEBUG_STARTED':
                 stepButton.disabled = false;
                 debugButton.disabled = true;
+                clearButton.innerHTML = `<i class="fa-regular fa-circle-stop" style="color:rgb(182, 36, 36)"></i>`
                 output.value = "Debugging started...\n";
                 break;
 
@@ -33,6 +34,7 @@ runnerWorker.onmessage = function (event) {
                 stepButton.disabled = true;
                 debugButton.disabled = false;
                 evaluteButton.disabled = false;
+                clearButton.innerHTML = `<i class="fa-solid fa-broom"></i>`
                 output.value += "Debugging finished.\n";
                 break;
 
@@ -48,6 +50,11 @@ runnerWorker.onmessage = function (event) {
             case 'FINISHING_TO_RUN':
                 running = false;
                 updateButton();
+                break;
+
+            case 'BREAK':
+                running = false;
+                breakRun();
                 break;
         }
     }

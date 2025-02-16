@@ -17,9 +17,16 @@ async function initPyodide() {
 async function startDebug(code) {
     debugLines = code.split("\n");
     debugFormatedCode = formatDebugCode(debugLines);
-    pyodide.runPythonAsync(debugFormatedCode);
 
-    postMessage({status: "DEBUG_STARTED"});
+    pyodide.runPythonAsync(debugFormatedCode).catch(
+        (error) => {
+            postMessage({status: "DEBUG_FINISHED"});
+            if (!error.toString().includes("KeyboardInterrupt")) {
+                console.log("[ERROR] -> " + error)
+            }
+        }
+    );
+    postMessage({status: "DEBUG_STARTED"})
 }
 
 async function finishDebug() {
@@ -62,9 +69,16 @@ onmessage = async function(event) {
     if (event.data.action !== undefined){
         if (event.data.action == "evaluate"){
             this.postMessage({ status: "STARTING_TO_RUN"});
-            await pyodide.runPythonAsync(event.data.codeToRun);
-            this.postMessage({ status: "FINISHING_TO_RUN"});
-
+            await pyodide.runPythonAsync(event.data.codeToRun)
+            .then(() => this.postMessage({ status: "FINISHING_TO_RUN"}))
+            .catch(
+                (error) => {
+                    this.postMessage({ status: "BREAK" })
+                    if (!error.toString().includes("KeyboardInterrupt")) {
+                        console.log("[ERROR] -> " + error)
+                    }
+                }
+            );
         }
         else if (event.data.action == "debug"){
             startDebug(event.data.codeToRun);
