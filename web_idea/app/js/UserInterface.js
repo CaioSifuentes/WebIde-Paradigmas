@@ -64,3 +64,11 @@ export function getFirstNonEmptyLine() {
     
     return 0;
 }
+
+export function defineWorkerMessage(status){
+    const workerStatus = document.getElementById("editor-label");
+    console.log(workerStatus)
+
+    if (workerStatus != null)
+        workerStatus.innerHTML = status ? `WORKER <span style="color: green;">READY</span>` : `WORKER <span style="color: red;">NOT READY</span>`;
+}

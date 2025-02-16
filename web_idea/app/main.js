@@ -1,6 +1,6 @@
 import { output, stepButton, debugButton, evaluteButton, editor, clearButton } from "./js/DocumentVars.js"
 import { updateVarsTable } from "./js/DebugTableManager.js";
-import { updateButton, highlightVisibleLine, getFirstNonEmptyLine, addToOutput } from "./js/UserInterface.js";
+import { updateButton, highlightVisibleLine, getFirstNonEmptyLine, addToOutput, defineWorkerMessage } from "./js/UserInterface.js";
 
 export let runnerWorker;
 export let interruptBuffer = new Uint8Array(new SharedArrayBuffer(1));
@@ -9,12 +9,14 @@ export let running = false;
 
 function loadWorker(){
     try {runnerWorker.terminate();} catch (e) {}
+    defineWorkerMessage(0);
     runnerWorker = new Worker('worker.js');
     runnerWorker.postMessage({ action: "loadBuffer", buffer:interruptBuffer });
     runnerWorker.onmessage = function (event) {
         if (event.data.status !== undefined) {
             switch (event.data.status) {
                 case 'WORKER_READY':
+                    defineWorkerMessage(1);
                     console.log("cl: Worker Ready");
                     break;
     

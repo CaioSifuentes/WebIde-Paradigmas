@@ -171,6 +171,15 @@ button:disabled {
   margin-bottom: 20px;
 }
 
+#editor-label {
+  font-size: 12px;
+  position: relative;
+  right: -40%;
+  padding: 2px;
+  color: var(--color-text);
+}
+
+
 /* ---------------------- ÁREA DE CÓDIGO E SAÍDA ---------------------- */
 .code-output-container {
   display: flex;

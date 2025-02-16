@@ -41,7 +41,7 @@ asyncio.create_task(debug_code())
             const indent = line.substring(0, line.indexOf(trimmedLine));
             let preDefCode = "" // Para tornar capaz de Debugar funções.
             let preCallDefCode = ""; // Para tornar capaz de Debugar funções.
-            if (line.trim().startsWith('for ') || line.trim().startsWith('if ') || line.trim().startsWith('elif ') || line.trim().startsWith('else:') || line.trim().startsWith('def ') || line.trim().startsWith('await ')  || line.trim().startsWith('async ')){
+            if (line.trim().startsWith('for ') || line.trim().startsWith('while ') || line.trim().startsWith('if ') || line.trim().startsWith('elif ') || line.trim().startsWith('else:') || line.trim().startsWith('def ') || line.trim().startsWith('await ')  || line.trim().startsWith('async ')){
                 if (line.startsWith('def ')){ // Para tornar capaz de Debugar funções.
                     preDefCode = "async ";
                     const funcName = line.match(/def\s+(\w+)\s*\(/)?.[1];
@@ -56,7 +56,7 @@ asyncio.create_task(debug_code())
     ${indent}__realLine = inspect.currentframe().f_lineno
     ${indent}__visibleLines[__realLine] = ${visibleLineCounter}
     ${indent}__RealVisibleLine = __visibleLines[__realLine]
-    ${indent}print(f"[DEBUG] -> Executando linha {__RealVisibleLine}: [ ${trimmedLine} ]")
+    ${indent}print(f'[DEBUG] -> Executando linha {__RealVisibleLine}: [ ${trimmedLine} ]')
     ${indent}${preCallDefCode == ""? line.trim() : preCallDefCode.trim()}
     ${indent}await wait_for_debug()
     ${indent}__currentVars.update({k: v for k, v in inspect.currentframe().f_locals.items() if (not k.startswith("__") and not callable(v))})
