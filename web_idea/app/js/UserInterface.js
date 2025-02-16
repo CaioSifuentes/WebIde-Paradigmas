@@ -7,7 +7,7 @@ export function addToOutput(s) {
 }
 
 export function updateButton() {
-    evaluteButton.textContent = running ? "Stop" : "Run";
+    evaluteButton.innerHTML = running ? `<i class="fa-solid fa-stop" style="color:rgb(182, 36, 36)"></i>` : `<i class="fa-solid fa-play" style="color:rgb(141, 209, 39)"></i>`;
     debugButton.disabled = running;
     stepButton.disabled = true;
 }
@@ -25,10 +25,10 @@ export function toggleSideMenu(){
     console.log("A")
     if (menu.style.width === "0px" || menu.style.width === "") {
         menu.style.width = "300px"; // Abre o menu
-        toggleButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
+        toggleButton.innerHTML = '<i class="fas fa-arrow-right"></i>';
     } else {
         menu.style.width = "0px"; // Fecha o menu
-        toggleButton.innerHTML = '<i class="fas fa-arrow-right"></i>';
+        toggleButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
     }
 
     menu.classList.toggle("open");

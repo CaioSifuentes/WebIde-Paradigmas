@@ -75,13 +75,14 @@ main {
 }
 
 .sample-code-buttons button {
-  min-width: 100px;
-  padding: 5px 15px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 5px 5px;
   border: 1px solid transparent;
   background: #1f1b2a;
   color: white;
   cursor: pointer;
-  border-radius: 25px;
+  border-radius: 50%;
   font-size: 14px;
   transition: transform 0.2s;
 }
@@ -112,7 +113,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 92%;
   margin-bottom: 20px;
 }
 
@@ -149,7 +150,7 @@ button:disabled {
   background-color: #302c34;
   color: white;
   margin-top: 10px;
-  border-color: #ea7cc8;
+  border-color: #885076;
 }
 
 /* ---------------------- MENU LATERAL ---------------------- */
@@ -180,7 +181,7 @@ button:disabled {
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  background-color: #6b46c1;
+  background-color: #ea7cc8;
   color: white;
   padding: 30px 8px;
   border-radius: 25px 0 0 25px;
@@ -195,7 +196,7 @@ button:disabled {
 }
 
 #toggleMenu:hover {
-  background-color: #906ce4;
+  background-color: #ea7cc8;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -229,10 +230,10 @@ button:disabled {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #6b46c1;
+  background: #ea7cc8;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #906ce4;
+  background: #e08dc6;
 }
