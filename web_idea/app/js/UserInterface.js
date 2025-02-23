@@ -11,6 +11,8 @@ export function updateButton() {
     clearButton.innerHTML = running ? `<i class="fa-regular fa-circle-stop" style="color:rgb(182, 36, 36)"></i>` : `<i class="fa-solid fa-broom"></i>`;
     debugButton.disabled = running;
     stepButton.disabled = true;
+
+    evaluteButton.disabled = false;
 }
 
 export function clearConsole() {
