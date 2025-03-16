@@ -1,5 +1,10 @@
 import { editor } from "./DocumentVars.js"
 
+/*
+Esse arquivo tem como principal função trabalhar na troca de paletas de cores do aplicativo.
+*/
+
+
 // Definindo as duas paletas de cores
 const palette1 = {
     '--color-text': '#ffffff',
