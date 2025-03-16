@@ -43,7 +43,6 @@ function addPressCoolDown(button, cooldown){
         button.disabled = true;
         setTimeout(() => {
             button.disabled = false;
-            console.log("DESABLED")
         }, cooldown);
     });
 }

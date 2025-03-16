@@ -56,10 +56,10 @@ asyncio.create_task(debug_code())
     ${indent}__realLine = inspect.currentframe().f_lineno
     ${indent}__visibleLines[__realLine] = ${visibleLineCounter}
     ${indent}__RealVisibleLine = __visibleLines[__realLine]
-    ${indent}print(f'[DEBUG] -> Executando linha {__RealVisibleLine}: [ ${trimmedLine} ]')
+    ${indent}print(f"""[DEBUG] -> Executando linha {__RealVisibleLine}: [ ${trimmedLine} ]""")
     ${indent}${preCallDefCode == ""? line.trim() : preCallDefCode.trim()}
     ${indent}await wait_for_debug()
-    ${indent}__currentVars.update({k: v for k, v in inspect.currentframe().f_locals.items() if (not k.startswith("__") and not callable(v))})
+    ${indent}__currentVars.update({k: v for k, v in inspect.currentframe().f_locals.items() if (not k.startswith("""__""") and not callable(v))})
     `;
             }
             //console.log("cl: linha -> " + visibleLineCounter);
